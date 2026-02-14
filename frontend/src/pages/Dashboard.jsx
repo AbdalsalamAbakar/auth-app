@@ -6,11 +6,14 @@ import { Trash2, User as UserIcon, Search } from 'lucide-react';
 export default function Dashboard() {
   const { user, token, logout } = useAuth();
   const [allUsers, setAllUsers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(""); // 🔍 New Search State
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // 🌍 Dynamic API URL: Uses Vercel's env variable or falls back to localhost
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/users', {
+      const res = await axios.get(`${API_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAllUsers(res.data);
@@ -26,7 +29,7 @@ export default function Dashboard() {
   const handleDelete = async (userId) => {
     if (window.confirm("Are you sure?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+        await axios.delete(`${API_URL}/api/users/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAllUsers(allUsers.filter(u => u._id !== userId));
@@ -36,7 +39,6 @@ export default function Dashboard() {
     }
   };
 
-  // 🧪 Logic: Filter users based on search input
   const filteredUsers = allUsers.filter(u => 
     u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     u.email.toLowerCase().includes(searchQuery.toLowerCase())

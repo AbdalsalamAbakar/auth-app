@@ -11,8 +11,11 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Dynamically pick the URL based on the environment
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    
     try {
-      const res = await axios.post('http://localhost:5000/api/login', { email, password });
+      const res = await axios.post(`${API_URL}/api/login`, { email, password });
       login(res.data.user, res.data.token);
       navigate('/dashboard');
     } catch (err) {
@@ -28,8 +31,8 @@ export default function Login() {
           onChange={e => setEmail(e.target.value)} required />
         <input type="password" placeholder="Password" className="w-full rounded bg-gray-700 p-3 text-white outline-none" 
           onChange={e => setPassword(e.target.value)} required />
-        <button className="w-full rounded bg-green-600 p-3 font-bold text-white hover:bg-green-500 transition">Login</button>
-        <p className="text-center text-gray-400">New? <Link to="/signup" className="text-blue-400">Create account</Link></p>
+        <button className="w-full rounded bg-green-600 p-3 font-bold text-white hover:bg-green-500 transition text-lg">Login</button>
+        <p className="text-center text-gray-400">New? <Link to="/signup" className="text-blue-400 font-medium">Create account</Link></p>
       </form>
     </div>
   );
